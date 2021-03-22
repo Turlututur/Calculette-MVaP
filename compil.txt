@@ -1,0 +1,2 @@
+java -cp ".;lib/antlr.jar;lib/MVaP.jar" MVaPAssembler test.mvap
+java -jar lib/MVaP.jar -d test.mvap.cbap
