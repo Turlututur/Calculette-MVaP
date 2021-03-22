@@ -64,6 +64,10 @@ instruction returns [ String code ]
         {
             $code = $tantque.code;
         }
+    | bloc finInstruction
+        {
+            $code = $bloc.code;
+        }
     
     ;
 
@@ -126,6 +130,10 @@ tantque returns [String code]
     
     };
 
+bloc returns [String code] @init {$code = "";}:
+  '{' NEWLINE* (instruction {
+        $code += $instruction.code + "\n";
+  })* NEWLINE* '}';
     
 
 
