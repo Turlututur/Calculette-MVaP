@@ -60,6 +60,11 @@ instruction returns [ String code ]
         {
             $code = $print.code;
         }
+    | tantque finInstruction 
+        {
+            $code = $tantque.code;
+        }
+    
     ;
 
 expression returns [ String code ]
@@ -103,15 +108,21 @@ condition returns [String code]
     | 'false' { $code = "  PUSHI 0\n"; }
     ;
 
-while returns [String code]
+tantque returns [String code]
     : 
-    'while' '(' condition ')'{
+    'while' '(' condition ')' instruction {
         String boucleIn = getNewLabel();
-        $code = boucleIn
-        $code = boucleOut   | $code = "JUMPF " + condition + boucleIn      
-    
-    String boucleOut = getNewLabel();
-    $code = boucleOut
+        String boucleOut = getNewLabel();
+
+        $code = "LABEL " + boucleIn +"\n";
+
+        $code += $condition.code;
+        $code += "JUMPF " + boucleOut + "\n";
+        $code += $instruction.code;
+        $code += "JUMP " + boucleIn+"\n";
+
+
+        $code += "LABEL " + boucleOut + "\n";
     
     };
 

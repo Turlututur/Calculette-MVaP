@@ -13,10 +13,10 @@ public class MainCalculette {
         CalculetteParser parser = new CalculetteParser(tokens);
         BufferedWriter writer = new BufferedWriter(new FileWriter("test.mvap"));
         try {
-             parser.start();    // start l'axiome de la grammaire
-            /*writer.write(parser.start().a.code);
+             //parser.start();    // start l'axiome de la grammaire
+            writer.write(parser.start().a.code);
             writer.close();
-            System.out.println("Résultat écrit dans le fichier 'test.mvap'");*/
+            System.out.println("Résultat écrit dans le fichier 'test.mvap'");
         } catch (RecognitionException e) {
             e.printStackTrace();
         } catch (Exception e) {
