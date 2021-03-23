@@ -31,11 +31,7 @@ decl
             tablesSymboles.putVar($IDENTIFIANT.text, $TYPE.text);
             if($TYPE.text.equals("int")){$code = "PUSHI " + "0" + "\n";}
             if($TYPE.text.equals("float")){$code = "PUSHF " + "0.0" + "\n";}
-        } finInstruction
-    | TYPE IDENTIFIANT '=' expression finInstruction{
-            tablesSymboles.putVar($IDENTIFIANT.text, $TYPE.text);
-            $code = $expression.code;
-    };
+        } finInstruction;
 
 assignation
 	returns[ String code ]:
@@ -87,9 +83,6 @@ expression
         }
 	| ENTIER {
         $code = "  PUSHI " + $ENTIER.text + "\n";
-    }
-    | '-' ENTIER {
-        $code = "  PUSHI -" + $ENTIER.text + "\n";
     }
 	| IDENTIFIANT {
 		AdresseType at = tablesSymboles.getAdresseType($IDENTIFIANT.text);
@@ -161,7 +154,4 @@ OP: ('==' | '>' | '<' | '<=' | '>=' | '!=' | '<>');
 WS: (' ' | '\t')+ -> skip;
 
 UNMATCH: . -> skip;
-COMMENTAIRE: ('/*' .*? '*/' | '//' .*? NEWLINE) -> skip;
-
-
 

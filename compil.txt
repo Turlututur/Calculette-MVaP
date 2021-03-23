@@ -6,3 +6,5 @@ java MainCalculette
 
 java -cp ".;lib/antlr.jar;lib/MVaP.jar" MVaPAssembler test.mvap
 java -jar lib/MVaP.jar -d test.mvap.cbap
+
+java org.antlr.v4.gui.TestRig Calculette start -gui
