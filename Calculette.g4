@@ -32,7 +32,7 @@ decl
             if($TYPE.text.equals("int")){$code = "PUSHI " + "0" + "\n";}
             if($TYPE.text.equals("float")){$code = "PUSHF " + "0.0" + "\n";}
         } finInstruction
-    | TYPE IDENTIFIANT '=' expression finInstruction{
+	| TYPE IDENTIFIANT '=' expression finInstruction {
             tablesSymboles.putVar($IDENTIFIANT.text, $TYPE.text);
             $code = $expression.code;
     };
@@ -65,18 +65,16 @@ instruction
 	| bloc finInstruction {
             $code = $bloc.code;
         }
-    | condition finInstruction {
+	| condition finInstruction {
             $code = $condition.code;
         }
-    | finInstruction {
+	| finInstruction {
         $code = "";
     };
 
 expression
 	returns[ String code ]:
-
-    '(' expression ')' {$code = $expression.code;}
-
+	'(' expression ')' {$code = $expression.code;}
 	| a = expression op = ('*' | '/') b = expression {
         if($op.text.equals("*")){$code = $a.code + $b.code + "MUL\n";}
         else{$code = $a.code + $b.code + "DIV\n";}
@@ -88,7 +86,7 @@ expression
 	| ENTIER {
         $code = "  PUSHI " + $ENTIER.text + "\n";
     }
-    | '-' ENTIER {
+	| '-' ENTIER {
         $code = "  PUSHI -" + $ENTIER.text + "\n";
     }
 	| IDENTIFIANT {
@@ -144,24 +142,27 @@ bloc
   }
 	)* NEWLINE* '}';
 
-
-
 // lexer
 NEWLINE: '\r'? '\n';
 finInstruction: ( NEWLINE | ';')+;
 
 TYPE: 'int' | 'float';
 
-IDENTIFIANT: ('a' ..'z' | 'A' ..'Z' | '_') ('a' ..'z' | 'A' ..'Z' | '_' | '0' ..'9')*;
+IDENTIFIANT: ('a' ..'z' | 'A' ..'Z' | '_') (
+		'a' ..'z'
+		| 'A' ..'Z'
+		| '_'
+		| '0' ..'9'
+	)*;
 
 ENTIER: ('0' ..'9')+;
 
 OP: ('==' | '>' | '<' | '<=' | '>=' | '!=' | '<>');
 
+//LOGIQUE: ( '||' |);
+
 WS: (' ' | '\t')+ -> skip;
 
 UNMATCH: . -> skip;
 COMMENTAIRE: ('/*' .*? '*/' | '//' .*? NEWLINE) -> skip;
-
-
 
