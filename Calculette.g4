@@ -41,7 +41,7 @@ decl
 
 assignation
 	returns[ String code ]:
-	IDENTIFIANT '=' expression {  
+	IDENTIFIANT '=' expression {
             AdresseType at = tablesSymboles.getAdresseType($IDENTIFIANT.text);
             $code = $expression.code + "STOREG " + at.adresse + "\n";
 
@@ -49,8 +49,8 @@ assignation
 
 instruction
 	returns[ String code ]:
-	expression finInstruction { 
-            $code = $expression.code; 
+	expression finInstruction {
+            $code = $expression.code;
         }
 	| assignation finInstruction {
             $code = $assignation.code;
@@ -67,11 +67,14 @@ instruction
 	| bloc finInstruction?{
             $code = $bloc.code;
         }
-	| condition finInstruction {
-            $code = $condition.code;
-        }
-	|si finInstruction{
+	|si {
             $code = $si.code;
+    }
+  |bouclefor{
+      $code = $bouclefor.code;
+      }
+  |repeat{
+        $code =$repeat.code;
     }
     | finInstruction {
         $code = "";
@@ -104,7 +107,7 @@ input
 	'read' '(' IDENTIFIANT ')' {
         AdresseType at = tablesSymboles.getAdresseType($IDENTIFIANT.text);
         $code =  " READ \n";
-        $code += " STOREG " + at.adresse + "\n";  
+        $code += " STOREG " + at.adresse + "\n";
     };
 
 print
@@ -121,8 +124,8 @@ condition
     | e = condition '||' f = condition { $code = $e.code + $f.code + "ADD \n PUSHI 0 \n SUP \n";}
     | '!' condition { $code = $condition.code + "PUSHI 1 \n" + "NEQ" + "\n";}
     | 'true' { $code = "  PUSHI 1\n"; }
-	| 'false' { $code = "  PUSHI 0\n"; };	
-       
+	| 'false' { $code = "  PUSHI 0\n"; };
+
 
 tantque
 	returns[String code]:
@@ -139,29 +142,59 @@ tantque
 
 
         $code += "LABEL " + boucleOut + "\n";
-    
+
     };
-    
-si 
+
+si
     returns[String code]:
     'if' '(' condition ')' NEWLINE? a = instruction {
         String IfOut = getNewLabel();
         String Else = getNewLabel();
-        
-        $code = $condition.code +"JUMPF" + Else +"\n";  
-    
-        $code += $a.code;
-        $code += "JUMP" + IfOut+"\n";
 
-        $code += "LABEL" + Else + "\n";
+        $code = $condition.code +"JUMPF " + Else +"\n";
+
+        $code += $a.code;
+        $code += "JUMP " + IfOut+"\n";
+
+        $code += "LABEL " + Else + "\n";
     }
-    ('else' b = instruction{
-        $code = $b.code + "\n";
-        } 
-    )?
-    
-    {$code += "LABEL" + IfOut + "\n";};
-    
+    ('else' b = instruction{$code = $b.code + "\n";})?
+
+    {$code += "LABEL " + IfOut + "\n";};
+
+
+bouclefor
+    returns[String code]:
+    'for' '(' a = assignation ';' condition ';' b = assignation  ')'  NEWLINE? instruction {
+
+        $code = $a.code;
+
+        String boucleIn = getNewLabel();
+        String boucleOut = getNewLabel();
+
+        $code += "LABEL " + boucleIn +"\n";
+
+        $code += $condition.code;
+        $code += "JUMPF " + boucleOut + "\n";
+        $code += $instruction.code;
+        $code += $b.code;
+        $code += "JUMP " + boucleIn + "\n";
+
+        $code += "LABEL " + boucleOut + "\n";
+
+    };
+repeat
+  returns[String code]:
+  'repeat' instruction 'until' '(' condition ')' {
+    String start = getNewLabel();
+    $code = " LABEL " + start + "\n";
+    $code += $instruction.code + "\n";
+    $code += $condition.code + " JUMPF " + start + "\n";
+
+  };
+
+
+
 
 bloc
 	returns[String code]
@@ -204,4 +237,3 @@ WS: (' ' | '\t')+ -> skip;
 
 UNMATCH: . -> skip;
 COMMENTAIRE: ('/*' .*? '*/' | '//' .*? NEWLINE) -> skip;
-
