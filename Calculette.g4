@@ -70,7 +70,10 @@ instruction
 	| condition finInstruction {
             $code = $condition.code;
         }
-	| finInstruction {
+	|si finInstruction{
+            $code = $si.code;
+    }
+    | finInstruction {
         $code = "";
     };
 
@@ -138,12 +141,27 @@ tantque
         $code += "LABEL " + boucleOut + "\n";
     
     };
-
-// si 
-//     returns[String code]:
-//     'if' '(' condition ')' NEWLINE? instruction {
+    
+si 
+    returns[String code]:
+    'if' '(' condition ')' NEWLINE? a = instruction {
+        String IfOut = getNewLabel();
+        String Else = getNewLabel();
         
-//     };
+        $code = $condition.code +"JUMPF" + Else +"\n";  
+    
+        $code += $a.code;
+        $code += "JUMP" + IfOut+"\n";
+
+        $code += "LABEL" + Else + "\n";
+    }
+    ('else' b = instruction{
+        $code = $b.code + "\n";
+        } 
+    )?
+    
+    {$code += "LABEL" + IfOut + "\n";};
+    
 
 bloc
 	returns[String code]
