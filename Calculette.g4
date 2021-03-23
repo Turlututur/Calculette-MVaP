@@ -12,8 +12,10 @@ grammar Calculette;
         else if(op.equals(">")){return op = " SUP";}
         else if(op.equals(">=")){return op = " SUPEQ";}
         else if(op.equals("<=")){return op = " INFEQ";}
-    return op=" NEQ";
-}}
+        return op=" NEQ";
+    }
+
+}
 
 start: a = calcul EOF;
 
@@ -59,10 +61,10 @@ instruction
 	| print finInstruction {
             $code = $print.code;
         }
-	| tantque finInstruction {
+	| tantque finInstruction? {
             $code = $tantque.code;
         }
-	| bloc finInstruction {
+	| bloc finInstruction?{
             $code = $bloc.code;
         }
 	| condition finInstruction {
@@ -112,12 +114,16 @@ print
 condition
 	returns[String code]:
 	a = expression OP b = expression { $code = $a.code + $b.code + operateurComp($OP.text) + "\n";}
-	| 'true' { $code = "  PUSHI 1\n"; }
-	| 'false' { $code = "  PUSHI 0\n"; };
+    | c = condition '&&' d = condition { $code = $c.code + $d.code + "MUL \n";}
+    | e = condition '||' f = condition { $code = $e.code + $f.code + "ADD \n PUSHI 0 \n SUP \n";}
+    | '!' condition { $code = $condition.code + "PUSHI 1 \n" + "NEQ" + "\n";}
+    | 'true' { $code = "  PUSHI 1\n"; }
+	| 'false' { $code = "  PUSHI 0\n"; };	
+       
 
 tantque
 	returns[String code]:
-	'while' '(' condition ')' instruction {
+	'while' '(' condition ')' NEWLINE? instruction {
         String boucleIn = getNewLabel();
         String boucleOut = getNewLabel();
 
@@ -133,14 +139,20 @@ tantque
     
     };
 
+// si 
+//     returns[String code]:
+//     'if' '(' condition ')' NEWLINE? instruction {
+        
+//     };
+
 bloc
 	returns[String code]
-	@init {$code = "";}:
-	'{' NEWLINE* (
+	: {$code = "";}
+	'{' NEWLINE? (
 		instruction {
         $code += $instruction.code + "\n";
   }
-	)* NEWLINE* '}';
+	)* NEWLINE? '}';
 
 // lexer
 NEWLINE: '\r'? '\n';
@@ -157,9 +169,18 @@ IDENTIFIANT: ('a' ..'z' | 'A' ..'Z' | '_') (
 
 ENTIER: ('0' ..'9')+;
 
-OP: ('==' | '>' | '<' | '<=' | '>=' | '!=' | '<>');
-
-//LOGIQUE: ( '||' |);
+OP: (
+		'=='
+		| '>'
+		| '<'
+		| '<='
+		| '>='
+		| '!='
+		| '<>'
+		| '||'
+		| '&&'
+		| '!'
+	);
 
 WS: (' ' | '\t')+ -> skip;
 
