@@ -11,6 +11,7 @@ Arthur BOCAGE
 Le but de ce projet était de réaliser une calculette en antlr dans le cadre de notre troisième année d'études d'informatiques.
 Voici le lien du sujet en question : https://terrier.users.greyc.fr/LangCompil/2021/TP5A9.html
 Nous n'avons étés que jusqu'à la partie J.
+Ce code est libre de droits.
 	
 
 ## Execution
