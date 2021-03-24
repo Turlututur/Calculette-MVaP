@@ -1,4 +1,4 @@
-## Table of contents
+## Sommaire
 * [Notre groupe](#Groupe)
 * [Informations](#Informations)
 * [Execution](#Execution)
