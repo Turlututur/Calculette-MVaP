@@ -1,0 +1,5 @@
+export CLASSPATH=".:lib/antlr.jar:$CLASSPATH"
+alias antlr="java org.antlr.v4.Tool $@"
+alias antlr-compile="javac *.java"
+alias grun="java org.antlr.v4.gui.TestRig $@"
+alias antlr4-grun="java org.antlr.v4.runtime.misc.TestRig $@"
