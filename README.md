@@ -19,10 +19,15 @@ Pour executer ce projet vous pouvez utiliser le script aliases.bat
 Il vous permetra d'avoir des commandes simplifiées.
 
 Pour compiler la calculette : 
+
     - antlr Camculette.g4
+    -
 Pour compiler l'ensemble des fichiers java qui auront été crées : 
+
     - antlr-compile
+    
 Et enfin vous pouvez executer le main :
+
     - java MainCalculette
 
 
