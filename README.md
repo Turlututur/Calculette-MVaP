@@ -21,7 +21,7 @@ Il vous permetra d'avoir des commandes simplifiées.
 Pour compiler la calculette : 
 
     - antlr Camculette.g4
-    -
+    
 Pour compiler l'ensemble des fichiers java qui auront été crées : 
 
     - antlr-compile
